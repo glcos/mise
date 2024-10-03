@@ -6,7 +6,7 @@ il download dei due files "prezzo_alle_8.csv" e "anagrafica_impianti_attivi.csv"
 
 Esempio:
 
-```
+```python
 from mise import mise
 
 mise = mise(15890) #15890 id stazione di servizio di esempio
