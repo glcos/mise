@@ -27,6 +27,8 @@ for fuel in fuels:
     print(fuel.description, fuel.experience, fuel.price, fuel.timestamp)
 ```
 
+Risultato:
+
 ```python
 csr@devl:~$ python3 misedemo.py
 ----Stazione di servizio----
