@@ -27,3 +27,14 @@ for fuel in fuels:
     print(fuel.description, fuel.experience, fuel.price, fuel.timestamp)
 ```
 
+```python
+csr@devl:~$ python3 misedemo.py
+----Stazione di servizio----
+CALOR SYSTEMS S.R.L.
+MILANO REPUBBLICA
+----Carburanti----
+Benzina servito 2.019 02/10/2024 07:14:51
+Benzina self 1.769 02/10/2024 07:14:51
+Gasolio servito 1.999 02/10/2024 07:14:51
+Gasolio self 1.749 02/10/2024 07:14:51
+```
