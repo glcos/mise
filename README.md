@@ -29,8 +29,8 @@ for fuel in fuels:
 
 Risultato:
 
-```python
-csr@devl:~$ python3 misedemo.py
+```console
+csr@havm:~$ python3 misedemo.py
 ----Stazione di servizio----
 CALOR SYSTEMS S.R.L.
 MILANO REPUBBLICA
@@ -40,3 +40,29 @@ Benzina self 1.769 02/10/2024 07:14:51
 Gasolio servito 1.999 02/10/2024 07:14:51
 Gasolio self 1.749 02/10/2024 07:14:51
 ```
+
+Esempio completo con download dei files dal sito web MISE
+
+```console
+csr@havm:~$ python3 mise.py 15890
+Downloading file anagrafica_impianti_attivi.csv from MISE website
+Downloading file prezzo_alle_8.csv from MISE website
+File stazioni di servizio aggiornato al 2024-10-02
+File prezzi carburante aggiornato al 2024-10-02
+----Stazione di servizio----
+CALOR SYSTEMS S.R.L.
+Api-Ip
+Stradale
+MILANO REPUBBLICA
+PIAZZA DELLA REPUBBLICA 5 20124
+MILANO
+MI
+latitudine 45.477935609703955
+longitudine 9.19595092535019
+----Carburanti----
+Benzina servito 2.019 02/10/2024 07:14:51
+Benzina self 1.769 02/10/2024 07:14:51
+Gasolio servito 1.999 02/10/2024 07:14:51
+Gasolio self 1.749 02/10/2024 07:14:51
+```
+
