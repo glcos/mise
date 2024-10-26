@@ -1,6 +1,7 @@
 import csv
 import os.path
 from urllib.request import urlopen
+from urllib.error import URLError
 from shutil import copyfileobj
 from datetime import datetime
 
@@ -43,7 +44,7 @@ FACILITY_LATITUDE = 8
 FACILITY_LONGITUDE = 9
 
 
-class mise():
+class mise:
     """Download and read data from MISE website."""
 
     def __init__(self, station_id):
@@ -52,6 +53,7 @@ class mise():
         self.fuels = None
         self.stations_ts = None
         self.price_ts = None
+        self.dl_path: str = ""
 
     def update(self):
         """Updates both prices and stations data from MISE website"""
@@ -63,7 +65,6 @@ class mise():
         dl_price = self.download_csv(price_csv_file)
 
         if dl_stations and dl_price:
-
             self.stations_ts = self.get_local_csv_ts(stations_csv_file)
             self.price_ts = self.get_local_csv_ts(price_csv_file)
 
@@ -88,6 +89,7 @@ class mise():
             ff = []
             for fuel_type in c:
                 f = fuel_obj()
+                f.station_id = self.station_id
                 f.description = fuel_type[FUEL_DESCRIPTION]
                 f.price = fuel_type[FUEL_PRICE]
                 f.experience = self.get_experience(fuel_type[FUEL_EXPERIENCE])
@@ -98,14 +100,14 @@ class mise():
 
         else:
             return False
-        
+
         return True
 
     def get_local_csv_ts(self, csv_file):
         """Read local csv file extraction date contained in the first line."""
 
-        if os.path.exists(csv_file):
-            with open(csv_file, 'r') as csvfile:
+        if os.path.exists(self.dl_path + csv_file):
+            with open(self.dl_path + csv_file, "r") as csvfile:
                 first_line = csvfile.readline().strip()
                 csv_extraction_date = first_line[-10:]
                 ts = datetime.strptime(csv_extraction_date, "%Y-%m-%d")
@@ -116,16 +118,16 @@ class mise():
     def get_csv_content(self, csv_file, station_id):
         """Read csv file provided by MISE website."""
 
-        with open(csv_file, 'r', newline='') as csvfile:
-            reader = csv.reader(csvfile, delimiter=';')
-            next(reader) # Skip header line
+        with open(self.dl_path + csv_file, "r", newline="") as csvfile:
+            reader = csv.reader(csvfile, delimiter=";")
+            next(reader)  # Skip header line
             content = []
             for row in reader:
                 if row[FACILITY_ID] == station_id:
                     content.append(row)
         return content
 
-    def download_csv(self, csv_file, days_back = 1):
+    def download_csv(self, csv_file, days_back=1):
         """Download csv only if local file is stale or missing."""
 
         local_file_ts = self.get_local_csv_ts(csv_file)
@@ -137,15 +139,21 @@ class mise():
             url = mise_base_url + csv_file
             try:
                 f = urlopen(url)
-            except:
-                self.logger("Connection error, failed to download " + csv_file + " from MISE website")
+            except URLError:
+                self.logger(
+                    "Connection error, failed to download "
+                    + csv_file
+                    + " from MISE website"
+                )
                 return False
 
             if f.status != 200:
-                   self.logger("MISE website returned an invalid HTTP response " + f.status)
-                   return False
+                self.logger(
+                    "MISE website returned an invalid HTTP response " + f.status
+                )
+                return False
 
-            with open(csv_file, 'wb') as local_file:
+            with open(self.dl_path + csv_file, "wb") as local_file:
                 copyfileobj(f, local_file)
 
         return True
@@ -164,7 +172,7 @@ class mise():
         pass
 
 
-class station_obj():
+class station_obj:
     """Station object"""
 
     def __init__(self):
@@ -178,10 +186,12 @@ class station_obj():
         self.latitude = None
         self.longitude = None
 
-class fuel_obj():
+
+class fuel_obj:
     """Fuel object"""
 
     def __init__(self):
+        self.station_id = None
         self.description = None
         self.price = None
         self.experience = None

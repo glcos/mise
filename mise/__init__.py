@@ -1,3 +1,3 @@
 """Main MISE lib namespace."""
 
-from .miselib import mise
+from .miselib import mise as mise
